@@ -48,6 +48,8 @@ export function GeneratorDemo() {
   const canGenerate = prompt.trim().length > 4 && !generating
 
   const handleCopyPrompt = async () => {
+    if (typeof window === "undefined") return
+    
     try {
       await navigator.clipboard.writeText(prompt)
       toast({ title: "Prompt copied" })

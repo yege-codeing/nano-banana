@@ -192,7 +192,7 @@ export default function Home() {
               <Card key={i} className="overflow-hidden group">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
-                    src={showcase.image || "/placeholder.svg"}
+                    src={showcase.image}
                     alt={showcase.title}
                     className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                   />
