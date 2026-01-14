@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { GeneratorDemo } from "@/components/generator-demo"
+import { AuthButtonClient } from "@/components/auth/auth-button-client"
 
 export default function Home() {
   return (
@@ -30,9 +31,11 @@ export default function Home() {
               <a href="#faq" className="text-sm hover:text-primary transition-colors">
                 FAQ
               </a>
-              <Button>Get Started</Button>
+              <AuthButtonClient />
             </nav>
-            <Button className="md:hidden">Menu</Button>
+            <div className="md:hidden">
+              <AuthButtonClient />
+            </div>
           </div>
         </div>
       </header>
