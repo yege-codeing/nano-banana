@@ -35,6 +35,15 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  if (user) {
+    try {
+      const { grantInitialCredits } = await import('@/lib/credits/grant-initial-credits')
+      await grantInitialCredits(user.id)
+    } catch (error) {
+      console.error('Failed to grant initial credits:', error)
+    }
+  }
+
   if (
     !user &&
     !request.nextUrl.pathname.startsWith('/login') &&

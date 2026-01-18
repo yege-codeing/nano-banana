@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -13,6 +13,9 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import { Copy, ImageIcon, Loader2, Plus, Sparkles, Trash } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
+import type { User } from "@supabase/supabase-js"
+import { CreditsDisplay } from "@/components/credits-display"
 
 type Mode = "image-to-image" | "text-to-image"
 
@@ -43,9 +46,41 @@ export function GeneratorDemo() {
   )
   const [outputs, setOutputs] = useState<GeneratedImage[]>([])
   const [generating, setGenerating] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+  const supabase = createClient()
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+    }
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [supabase.auth])
 
   const referenceCount = referenceImages.length
-  const canGenerate = prompt.trim().length > 4 && !generating
+  const canGenerate = prompt.trim().length > 4 && !generating && !!user
+
+  const handleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    })
+    if (error) {
+      toast({ title: "登录失败", description: error.message })
+    }
+  }
 
   const handleCopyPrompt = async () => {
     if (typeof window === "undefined") return
@@ -114,6 +149,20 @@ export function GeneratorDemo() {
         body: JSON.stringify(payload),
       })
 
+      if (res.status === 402) {
+        const err = await res.json()
+        toast({
+          title: "积分不足",
+          description: "您需要积分来生成图片。订阅即可获得 100 个积分！",
+          action: (
+            <Button onClick={() => window.location.href = '/pricing'}>
+              立即订阅
+            </Button>
+          )
+        })
+        return
+      }
+
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
         throw new Error(err.error || "Generation failed")
@@ -168,6 +217,7 @@ export function GeneratorDemo() {
                   Transform your image with AI-powered editing
                 </p>
               </div>
+              {user && <CreditsDisplay />}
             </div>
 
             <div className="mt-5">
@@ -310,8 +360,8 @@ export function GeneratorDemo() {
               <Button
                 size="lg"
                 className="h-12 w-full rounded-xl"
-                disabled={!canGenerate}
-                onClick={runGeneration}
+                disabled={user ? !canGenerate : false}
+                onClick={user ? runGeneration : handleSignIn}
               >
                 {generating ? (
                   <>

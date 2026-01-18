@@ -28,3 +28,7 @@ next-env.d.ts
 
 # editors
 .idea/
+
+
+# md
+.md

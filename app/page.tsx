@@ -31,6 +31,9 @@ export default function Home() {
               <a href="#faq" className="text-sm hover:text-primary transition-colors">
                 FAQ
               </a>
+              <a href="/pricing" className="text-sm hover:text-primary transition-colors">
+                Pricing
+              </a>
               <AuthButtonClient />
             </nav>
             <div className="md:hidden">

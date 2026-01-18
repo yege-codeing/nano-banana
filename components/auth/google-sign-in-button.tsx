@@ -37,7 +37,7 @@ export function GoogleSignInButton() {
       onClick={handleSignIn}
       disabled={isLoading}
       variant="outline"
-      className="w-full"
+      size="sm"
     >
       <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
         <path
