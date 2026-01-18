@@ -50,15 +50,32 @@ ALTER TABLE user_credits ENABLE ROW LEVEL SECURITY;
 ALTER TABLE credit_transactions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
 
--- RLS Policies
+-- RLS Policies for user_credits
 CREATE POLICY "Users can view own credits" ON user_credits
   FOR SELECT USING (auth.uid() = user_id);
 
+CREATE POLICY "Service can insert credits" ON user_credits
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Service can update credits" ON user_credits
+  FOR UPDATE USING (true);
+
+-- RLS Policies for credit_transactions
 CREATE POLICY "Users can view own transactions" ON credit_transactions
   FOR SELECT USING (auth.uid() = user_id);
 
+CREATE POLICY "Service can insert transactions" ON credit_transactions
+  FOR INSERT WITH CHECK (true);
+
+-- RLS Policies for subscriptions
 CREATE POLICY "Users can view own subscriptions" ON subscriptions
   FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Service can insert subscriptions" ON subscriptions
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Service can update subscriptions" ON subscriptions
+  FOR UPDATE USING (true);
 
 -- Create function for atomic credit consumption
 CREATE OR REPLACE FUNCTION consume_user_credits(
