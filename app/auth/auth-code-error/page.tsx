@@ -1,3 +1,17 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "Authentication Error - Sign In Issue",
+  description: "We encountered an issue with your sign-in. Please try again or contact support if the problem persists.",
+  alternates: {
+    canonical: '/auth/auth-code-error',
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
+
 export default function AuthCodeErrorPage() {
   return (
     <div className="flex min-h-screen items-center justify-center">

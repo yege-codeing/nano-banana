@@ -1,7 +1,7 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 export async function grantInitialCredits(userId: string) {
-  const supabase = await createClient()
+  const supabase = await createServiceClient()
 
   const { data: existing } = await supabase
     .from('user_credits')

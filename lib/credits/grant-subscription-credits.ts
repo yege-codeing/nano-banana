@@ -1,11 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 export async function grantSubscriptionCredits(
   userId: string,
   paypalOrderId: string,
   amount: number
 ) {
-  const supabase = await createClient()
+  const supabase = await createServiceClient()
 
   const creditsMap: Record<string, number> = {
     '19.00': 100,

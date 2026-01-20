@@ -1,7 +1,7 @@
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 export async function consumeCredits(userId: string, amount: number = 1) {
-  const supabase = await createClient()
+  const supabase = await createServiceClient()
 
   const { data, error } = await supabase.rpc('consume_user_credits', {
     p_user_id: userId,
